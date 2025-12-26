@@ -1,17 +1,36 @@
-# AWS-Ready Lakehouse Data Pipeline for Multi-Source Sales Analytics
+# Core Lakehouse Data Pipeline for Multi-Source Sales Analytics
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 ![PySpark](https://img.shields.io/badge/pyspark-batch-orange)
 ![Airflow](https://img.shields.io/badge/airflow-orchestration-green)
-![AWS Ready](https://img.shields.io/badge/aws-ready-yellow)
 ![Delta Lake](https://img.shields.io/badge/delta-lakehouse-purple)
 ![Data Quality](https://img.shields.io/badge/data%20quality-great%20expectations-red)
 ![Status](https://img.shields.io/badge/status-portfolio--project-informational)
 
 Production-grade **Data Engineering pipeline** designed to ingest, validate,
 transform, and expose sales data from multiple sources using a **Lakehouse
-architecture**.  
-Built for local execution and **designed for seamless migration to AWS-managed services**.
+architecture**.
+
+This project focuses on **core Data Engineering fundamentals**, intentionally
+decoupled from any specific cloud provider. It is designed to run locally while
+demonstrating patterns and practices that translate directly to managed cloud
+services.
+
+---
+
+## Scope and Focus
+
+This repository intentionally focuses on foundational Data Engineering concepts:
+
+- Spark-based batch processing
+- Lakehouse architecture (Bronze / Silver / Gold)
+- Idempotent and reprocessable pipelines
+- Data quality enforcement as a gate between layers
+- Clear separation of concerns and production-oriented structure
+
+Cloud-specific implementations (e.g. AWS Glue, MWAA, IAM) are intentionally kept
+out of this repository to avoid coupling core concepts with managed services.
+A separate repository demonstrates the AWS Glue adaptation of this pipeline.
 
 ---
 
@@ -28,16 +47,15 @@ Without a unified pipeline:
 - Business decisions are delayed or based on inconsistent metrics  
 - Data quality issues propagate to dashboards and ML models  
 
-This project provides a **scalable, reliable, and AWS-ready data pipeline** that
-standardizes ingestion, enforces data quality, and delivers analytics-ready datasets
-for BI and downstream machine learning use cases.
+This project provides a **scalable and reliable batch data pipeline** that
+standardizes ingestion, enforces data quality, and delivers analytics-ready
+datasets for BI and downstream machine learning use cases.
 
 ---
 
 ## Architecture Overview
 
-The pipeline follows a **Lakehouse architecture** implemented on object storage
-and organized into three logical layers:
+The pipeline follows a **Lakehouse architecture** organized into three logical layers:
 
 - **Bronze Layer**  
   Raw, immutable data ingestion from APIs and CSV files.  
@@ -78,7 +96,7 @@ Data promotion between layers is blocked if **data quality validations fail**.
 ## Key Engineering Decisions
 
 - **PySpark over Pandas**  
-  Enables horizontal scalability and direct compatibility with AWS EMR and AWS Glue.
+  Enables scalable processing and reflects industry-standard batch data workloads.
 
 - **Delta Lake format**  
   Provides ACID guarantees, schema evolution, time travel, and safe reprocessing.
@@ -89,8 +107,9 @@ Data promotion between layers is blocked if **data quality validations fail**.
 - **Data quality as a first-class concern**  
   Validations are enforced before data is promoted to the next layer.
 
-- **AWS-first design**  
-  Every component maps directly to managed AWS services.
+- **Cloud-agnostic design**  
+  The architecture and code structure map cleanly to managed services without
+  embedding provider-specific logic.
 
 ---
 
@@ -105,7 +124,7 @@ sales-data-pipeline/
 ├── dags/ # Airflow DAG definitions
 ├── config/ # Environment-specific YAML configs
 ├── tests/ # Unit and integration tests
-├── infrastructure/ # Docker and future IaC
+├── infrastructure/ # Docker and local setup
 └── docs/ # Architecture docs and runbooks
 
 
@@ -117,10 +136,11 @@ Batch pipelines are orchestrated using **Apache Airflow** with:
 
 - Daily scheduling  
 - Explicit task dependencies (Bronze → Silver → Gold)  
-- Retry policies and SLA definitions  
+- Retry policies and failure handling  
 - Environment-based configuration  
 
-The same DAGs are designed to run locally or on **Amazon MWAA**.
+Airflow is used locally to demonstrate orchestration concepts independently of
+any managed service.
 
 ---
 
@@ -136,20 +156,6 @@ Failures stop the pipeline and prevent downstream data contamination.
 
 ---
 
-## AWS Deployment Mapping
-
-| Layer / Concern | AWS Service |
-|-----------------|------------|
-| Storage         | Amazon S3 (Bronze / Silver / Gold zones) |
-| Processing      | AWS Glue or Amazon EMR (Spark) |
-| Orchestration   | Amazon MWAA (Airflow) |
-| Query Layer     | Amazon Athena / Redshift Spectrum |
-| Monitoring      | Amazon CloudWatch |
-| Data Quality    | Great Expectations |
-| Security        | IAM, KMS, Lake Formation |
-
----
-
 ## Local Development
 
 ```bash
@@ -161,27 +167,3 @@ make setup-local
 
 # Run full batch pipeline
 make run-pipeline ENV=local
----
-
-Failure Handling & Reprocessing
-
-Source unavailability → retries with exponential backoff
-
-Schema breaking changes → quarantine + validation failure
-
-Late-arriving or duplicate data → handled via Delta Lake MERGE
-
-Historical reprocessing → controlled backfills using partition-based reruns
----
-
-Future Improvements
-
-Event-driven ingestion using S3 events and EventBridge
-
-Streaming ingestion via Kinesis or MSK
-
-ML feature store integration
-
-Infrastructure as Code using Terraform
-
-Multi-account and multi-region deployment
