@@ -1,0 +1,5 @@
+env: local
+data_lake:
+  bronze: s3://sales-data-bronze/
+  silver: s3://sales-data-silver/
+  gold: s3://sales-data-gold/
