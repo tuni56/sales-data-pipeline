@@ -163,7 +163,7 @@ make setup-local
 make run-pipeline ENV=local
 ---
 
-## Failure Handling & Reprocessing
+Failure Handling & Reprocessing
 
 Source unavailability → retries with exponential backoff
 
@@ -174,7 +174,7 @@ Late-arriving or duplicate data → handled via Delta Lake MERGE
 Historical reprocessing → controlled backfills using partition-based reruns
 ---
 
-## Future Improvements
+Future Improvements
 
 Event-driven ingestion using S3 events and EventBridge
 
