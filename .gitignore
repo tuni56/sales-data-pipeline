@@ -1,0 +1,86 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# =========================
+# PySpark
+# =========================
+spark-warehouse/
+metastore_db/
+derby.log
+
+# Spark local output
+*.crc
+*.jsc
+*.rdd
+
+# =========================
+# Airflow
+# =========================
+airflow.cfg
+airflow.db
+airflow-webserver.pid
+airflow-scheduler.pid
+logs/
+plugins/__pycache__/
+
+# =========================
+# Data & Artifacts
+# =========================
+data/
+bronze/
+silver/
+gold/
+*.parquet
+*.csv
+*.json
+
+# =========================
+# Great Expectations
+# =========================
+great_expectations/uncommitted/
+great_expectations/.ge_store_backend_id
+
+# =========================
+# Docker
+# =========================
+*.log
+docker-compose.override.yml
+
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.*
+*.pem
+*.key
+*.crt
+secrets/
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
